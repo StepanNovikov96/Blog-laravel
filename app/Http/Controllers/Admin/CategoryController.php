@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Category;
+use App\Http\Requests\StoreCategory;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -15,7 +16,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::paginate(2);
+        $categories = Category::paginate(20);
         return view('admin.categories.index',compact('categories'));
     }
 
@@ -26,7 +27,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.categories.create');
     }
 
     /**
@@ -37,7 +38,12 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+           'title' => 'required',
+        ]);
+        Category::create($request->all());
+        //$request->session()->flash('success', 'Категория добавлена');
+        return redirect()->route('categories.index')->with('success', 'Категория добавлена');
     }
 
     /**
@@ -48,7 +54,8 @@ class CategoryController extends Controller
      */
     public function edit($id)
     {
-        dd(__METHOD__);
+        $category = Category::find($id);
+        return view('admin.categories.edit',compact('category'));
     }
 
     /**
@@ -60,7 +67,13 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'title' => 'required',
+        ]);
+        $category = Category::find($id);
+        $category->update($request->all());
+        return redirect()->route('categories.index')->with('success', 'Изменения сохранены');
+
     }
 
     /**
@@ -71,6 +84,9 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        dd(__METHOD__);
+        $category = Category::find($id);
+        $category->delete();
+        return redirect()->route('categories.index')->with('success', 'Категория удалена');
+
     }
 }
