@@ -32,6 +32,7 @@
                             <!-- form start -->
                             <form role="form" method="post" action="{{route('posts.store')}}" enctype="multipart/form-data">
                                 @csrf
+
                                 <div class="card-body">
                                     <div class="form-group">
                                         <label for="title">Название</label>
